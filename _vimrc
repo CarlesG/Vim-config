@@ -5,7 +5,8 @@ source $VIMRUNTIME/vimrc_example.vim
 " Use the internal diff if available.
 " Otherwise use the special 'diffexpr' for Windows.
 "colorscheme desert
-colorscheme molokai
+colorscheme molokai         "para añadir otros temas guardados en la carpeta color
+"colorscheme gruvbox
 "colorscheme mitheme 
 "colorscheme zenburn
 syntax on 
@@ -21,35 +22,39 @@ set linespace=6
 "set guifont = Hack_NF:h8
 "set guifont =Monofur_NF:h8
 set guifont=Consolas:h8
-set laststatus=2
+set laststatus=2                            " para poder ver la línea de estatus
 set cursorline                              " resalta la línea actual 
 "==============Configuración del status bar=====================
-set statusline+=%#Visual#
-set statusline+=\ %.255555f
-set statusline+=\ %m                        " indica si el archivo ha sido modificado
 set statusline+=%#IncSearch#
+set statusline+=\ %.25f
+set statusline+=\ %m                        " indica si el archivo ha sido modificado
+set statusline+=%#Visual#
 set statusline+=%=
-set statusline+=\ %y                        "tipo de fichero
-set statusline+=\ Ln:\ %-3l\/%-3L[%p%%]     "senyala la linea actual respecto al porcentaje total
-set statusline+=\ Col:%c                    " current column
+set statusline+=\ %y                        " tipo de fichero
+set statusline+=\ Ln:\ %-3l\/%-3L[%p%%]     " senyala la linea actual respecto al porcentaje total
+set statusline+=\ Col:%-2c                  " Columna actual
 set statusline+=\ Buf:%n                    " Buffer number
 set expandtab
-set guicursor=n-v-c:block-Cursor/
-set vb
+
+"==============Personalización del cursor de escritura========
+set guicursor=n-v-c:block-Cursor
+set guicursor+=i:ver100-iCursor             " Para que el cursor sea una linea vertical en el modo insertard
+set guicursor+=n-v-c:blinkon0                " Desactivamos el parpadeo para el todos los modos
+set guicursor+=i:blinkwait10                " Incrementamos el parpadeo para el modo INSERTAR
 set noerrorbells
 set autoindent
 set showmatch
 set hlsearch
 set ignorecase
 set incsearch
-hi CursorLine gui=none cterm=none
-let g:netrw_browse_split =2 " para que se abra el explorador de archivos en un tab vertical. Podemos realizar 1,2,3,4
+set guioptions-=r                           " Para quitar la barra de scroll lateral del GUI
+let g:netrw_browse_split = 2 " para que se abra el explorador de archivos en un tab vertical. Podemos realizar 1,2,3,4
 let g:netrw_altv = 1
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
+let g:netrw_banner = 0      " quita el banner que está siempre ocupando el inicio de la pantalla
+let g:netrw_liststyle = 3   " estilo del arbol de directorio 
 let g:netrw_list_hide = netrw_gitignore#Hide()
 let g:netrw_list_hide.=',\|\s\s\)\zs\.\S\+'
-let g:netrw_winsize = 25
+let g:netrw_winsize = 25    " ancho en porcentaje que queremos que ocupe el árbol de directorios
 if &diffopt !~# 'internal'
   set diffexpr=MyDiff()
 endif
