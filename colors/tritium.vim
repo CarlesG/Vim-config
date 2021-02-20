@@ -2,7 +2,8 @@
 "
 " Author: Tomas Restrepo <tomas@winterdom.com>
 " https://github.com/tomasr/molokai
-"
+" Modified by: Carlos San Martin https://github.com/carsanbu/dotfiles.d/.config/nvim/colors/
+
 " Note: Based on the Monokai theme for TextMate
 " by Wimer Hazenberg and its darker variant
 " by Hamish Stuart Macpherson
