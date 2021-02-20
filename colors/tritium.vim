@@ -18,7 +18,7 @@ if version > 580
         syntax reset
     endif
 endif
-let g:colors_name="isotopo"
+let g:colors_name="tritium"
 
 hi Delimiter			guifg=#d0d0d0
 hi CursorLineNr		guifg=#f3e500
@@ -105,12 +105,11 @@ hi TabLineFill     guifg=#1B1D1E guibg=#1B1D1E
 hi TabLine         guibg=#1B1D1E guifg=#808080 gui=none
 
 hi Normal          guifg=#F8F8F2 guibg=#000000 
-" guibg=#1B1D1E
 hi Comment         guifg=#7E8E91
 hi CursorLine                    guibg=#293739
 hi CursorColumn                  guibg=#293739
 hi ColorColumn                   guibg=#232526
-hi LineNr          guifg=#465457 guibg=#232526
+hi LineNr          guifg=#465457
 hi NonText         guifg=#465457
 hi SpecialKey      guifg=#465457
 
