@@ -13,37 +13,9 @@ try                             " En caso de no encuentre el tema isotopo, carga
   endtry
 endtry
 "set background=dark
-
-"-----Cargamos el directorio del plugin manager-----
-filetype off
-set shellslash
-set rtp+=$HOME/vimfiles/bundle/Vundle.vim
-call vundle#begin('$HOME/vimfiles/bundle')
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
 "
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-
-"colorscheme gruvbox
-"colorscheme mitheme 
-"colorscheme zenburn
-"colorscheme solarized
-"colorscheme Tomorrow-Night-Eighties
 syntax on 
-set number
+set number relativenumber
 set ruler
 set nocompatible
 set tabstop=4
@@ -53,7 +25,7 @@ set linespace=6
 "set guifont=DaddyTimeMono_Nerd_Font_Mono:h8
 "set guifont = Hack_NF:h8
 "set guifont =Monofur_NF:h8
-set guifont=Consolas:h8                     " cambiar la letra y el tamaño de esta
+set guifont=Consolas:h12                    " cambiar la letra y el tamaño de esta
 set laststatus=2                            " para poder ver la línea de estatus
 set cursorline                              " resalta la línea actual 
 set wrap linebreak nolist                   " soft wrap, respeta la terminación de palabras
@@ -80,17 +52,26 @@ set expandtab
 
 "==============Personalización del cursor de escritura========
 "set guicursor=n-v-c:block-Cursor
-"set guicursor+=i:ver100-iCursor              " Para que el cursor sea una linea vertical en el modo insertar
-"set guicursor+=n-v-c:blinkon0                " Desactivamos el parpadeo para el todos los modos
+"set guicursor+=i:ver100-iCursor             " Para que el cursor sea una linea vertical en el modo insertar
+"set guicursor+=n-v-c:blinkon0               " Desactivamos el parpadeo para el todos los modos
 
-set noerrorbells                              " Eliminamos la campana del error
+set noerrorbells                             " Eliminamos la campana del error
 set autoindent
 set showmatch
 set hlsearch
 set ignorecase
 set incsearch
-set guioptions-=r                           " Para quitar la barra de scroll lateral del GUI
-set guicursor+=i:blinkwait20                " Incrementamos el parpadeo para el modo INSERTAR
+set guioptions-=r                            " Para quitar la barra de scroll lateral del GUI
+set guicursor+=i:blinkwait20                 " Incrementamos el parpadeo para el modo INSERTAR
+set nobackup
+set nowritebackup
+set noswapfile
+set noundofile
+set clipboard=unnamed
+
+" ==============Remapeado de la tecla esc============== 
+imap jj <Esc>
+imap kk <Esc>
 
 "----------Configuración nerdtree, plugin que viene por defecto en vim
 let g:netrw_browse_split = 2                " para que se abra el explorador de archivos en un tab vertical. Podemos realizar 1,2,3,4
@@ -103,6 +84,7 @@ let g:netrw_winsize = 25                    " ancho en porcentaje que queremos q
 if &diffopt !~# 'internal'
   set diffexpr=MyDiff()
 endif
+
 function MyDiff()
   let opt = '-a --binary '
   f expand("%") == ""|browse confirm w|else|confirm w|endif
@@ -143,22 +125,37 @@ function MyDiff()
   endif
 endfunction
 
-"=========Para compilar en C dentro de VIM=============
-map <F3> : call CompileGcc()<CR>
-func! CompileGcc()
-  exec "w"
-  exec "!gcc % -o %<"
-endfunc
+function BuscarFechasMes(mes, anio)
+  let l:fechas_faltantes = []
+  let l:dias = range(1, 31)
 
-map <F4> :call CompileRunGcc()<CR>
-func! CompileRunGcc()
-  exec "w"
-  exec "!gcc % -o %<"
-  exec "! %<.exe"
-endfunc
+  " Ajustar días del mes
+  if a:mes == 2
+    let l:dias = range(1, (a:anio % 4 == 0 && (a:anio % 100 != 0 || a:anio % 400 == 0)) ? 29 : 28)
+  elseif index([4, 6, 9, 11], a:mes) != -1
+    let l:dias = range(1, 30)
+  endif
 
-" para poder utilizar 
-nmap <C-V> "+gP
-imap <C-V> <ESC><C-V>ia
-vmap <C-C> "+y
+  for dia in l:dias
+    let l:fecha = printf('%02d/%02d/%d', dia, a:mes, a:anio)
+    let l:pattern = escape(l:fecha, '/')
 
+    " Buscar la fecha en todo el archivo
+    let l:found = search(l:pattern, 'w') " 'w' busca en todo el buffer
+
+    if l:found == 0
+      call add(l:fechas_faltantes, {'filename': expand('%'), 'lnum': 1, 'col': 1, 'text': 'Falta: ' . l:fecha})
+    endif
+  endfor
+
+  " Mostrar resultados
+  if !empty(l:fechas_faltantes)
+    call setqflist(l:fechas_faltantes, 'r')
+    copen
+    echo 'Fechas faltantes mostradas en quickfix'
+  else
+    echo "¡Todas las fechas del mes están presentes!"
+  endif
+endfunction
+
+command! -nargs=+ BuscarMes call BuscarFechasMes(<f-args>)
